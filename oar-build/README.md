@@ -2,20 +2,21 @@
 
 The contents of this directory originate from [the oar-build
 repository](https://github.com/usnistgov/oar-build).  It contains
-tools for building an OAR package.  integration of these tools 
+tools for building an OAR package.  Integration of these tools 
 into an OAR package starts by copying the contents of the oar-build
 repository into the `oar-build` directory at the top level of the OAR
 package's repository directory.
 
 OAR packages use several different languages (e.g. Java, Javascript,
-Python) and, consequently, different build systems (`maven`, `npm`,
-python's `distuils` ) to implement the package's capabilities.
-The oar-build framework wraps around the native build framework(s) and
-uses docker to build the package's deployable products, thereby
-eliminating the need to preinstall the package's software prerequisites,
-including its build system.  This streamlines the build process for
-deployment purposes and provides a single command for building that
-works across all the OAR packages and the native frameworks it uses.  
+Python) to implement the package's capabilities and, consequently,
+different build systems (`maven`, `npm`, python's `distuils` ) create
+the packages products.  The oar-build framework wraps around the
+native build framework(s) and uses docker to build the package's
+deployable products, thereby eliminating the need to preinstall the
+package's software prerequisites, including its build system.  This
+streamlines the build process for deployment purposes and provides a
+single command for building that works across all the OAR packages and
+the native frameworks it uses.   
 
 (When building for development purposes, the developer would use the
 native build tool directly; thus, in this case, the build tool must be
