@@ -1,0 +1,115 @@
+dir: docker 
+ -- contains:
+    o  one or more containers, at least one call build-test
+    o  build-all.sh: builds all containers
+    o  run.sh:  launches build-test container, passes in commands
+    o  README.md: customizable explanation of the docker directory
+ -- the contents serve as a template for a repo; these files can be
+    customized as needed.
+
+dir: oar-build
+ -- purpose: provide scripts and configurations for building package
+ -- this directory is not intended to be customized
+ -- contains:
+    -- library shell scripts, starting with _
+
+dir: scripts
+ -- provides template scripts which can be customized
+ -- includes:
+    o  buildall.sh -- a script that will build all build products for
+          an application into the dist directory.  This is intended to
+          be run in an environment that has all build dependencies
+          already installed (e.g. developer's environment, inside a
+          docker container).
+    o  testall.sh -- a script that will run all unit tests for an
+          application.  It may or may not assume that the products are 
+          already built into dist.  Intended to run in an environment
+          that has all build dependencies already installed (e.g. 
+          developer's environment, inside a docker container).
+    o  generate_dist.sh -- a script that will use docker to create a
+          distribution ready for deployment.  Switch whether
+          deployment products are bundled up (code-deploy context: no,
+          local-deploy context: yes)??
+
+## Version and Dependency Tracking
+
+### Version string conventions
+
+The version string given to a built product, in general, has the
+following pattern:
+
+   VERSION := TAG ':' BUILD
+
+where TAG is a string identifying either the explicit release or a
+name that indicates the state of the repository or archive that the
+product came from.  BUILD is an identifier indicating a particular
+build applied on that repository to produce the product.
+
+[TAG] can take different forms depending on the state of the
+repository or archive:
+
+   TAG := RELEASE | DEVID
+   RELEASE := RELBASE [ '-rc' R ] [ '-' N '-' COMMIT ]
+   DEVID   := BRANCH '-' COMMIT
+   RELBASE := MAJ '.' MIN '.' BF
+   MAJ, MIN, BF := 0..
+   R, N := 1..
+
+where RELEASE indicates an official release tagged by the project.
+
+RELBASE by itself represents a production release of the product.  If
+it is followed by "-rc", then the version identifies a release
+candidate.  A TAG that ends with the "-N-COMMIT" pattern (where N is
+an integer and COMMIT is an abbreviated git commit ID) indicates that
+the source repository has N additional commits beyond its base tag
+where the last one is identified by COMMIT (see "man git-describe").
+
+RELBASE is a conventional 3-tiered version string, where MAJ is the
+major release number, MIN is the minor release number, and BF is the
+"bug fix" number.  All start with 0.  A difference in just the BF
+number indicates two versions that are fully API compatible.  
+
+The DEVID form indicates that the state of the repository bares no
+relationship to an official release.  BRANCH is the name of the
+repository branch that was checkout, and COMMIT identifies the last
+commit on that branch.
+
+BUILD modifiers indicates that the product is the result of a
+particular build process.  Differences in products with different
+BUILD modifiers may reflect differences in the build environment or
+the versions of dependencies in place at the time of the build.
+
+   BUILD := BUILDER '-' BN
+   BN := N | COMMIT
+
+BUILDER is a string indicating who or what built the product.  A value
+of 'c' indicates that it was produced by the CICD system; otherwise,
+it might be set to the username of the user executing the build.   BN
+is either an integer (indicating a sequence) or an abbreviated git
+commit string. 
+
+#### Version examples
+
+   1.1.12        -- the 12th production release of the 1.1.X series
+                    (which started with 1.1.0)
+   1.2.0rc3      -- the 3rd release candidate for version 1.2.0
+   1.2.0rc3-4-a803fd1  -- the 3rd release candidate for version 1.2.0
+                    after 4 commits have been added.  This might
+                    appear prior to the tagging of 1.2.0rc4.
+   integration-cf241a8 -- the integration branch when its last commit
+                    was cf241a8.
+   1.2.0rc3:c-1  -- the first build of the 3rd release candidate for
+                    version 1.2.0 as built by the CICD system.
+   1.2.0rc3:rlp3-4  -- the fourth build of the 3rd release candidate for
+                    version 1.2.0 as built by user rlp3.
+   
+
+### Extracting the current version
+
+ - setversion: script that
+   1) creates VERSION containing the version string
+   2) injects the version into the source code
+     cmds: current branch:  git rev-parse --abbrev-ref HEAD
+           current commit:  git rev-parse HEAD
+
+### Creating a product level oar-dependencies.json
