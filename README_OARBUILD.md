@@ -22,6 +22,45 @@ the native frameworks it uses.
 native build tool directly; thus, in this case, the build tool must be
 pre-installed into the developer's native environment.)
 
+## Integrating the oar-build tools into an OAR package
+
+The oar-build tools are typically integrated into a package early in
+the development of an OAR package.  The contents of the [the `oar-build`
+repository](https://github.com/usnistgov/oar-build) are copied into
+new package's top directory.
+
+For example, to integrate the tools into a new package, `oar-mypkg`,
+you would download a zip-file release of the `oar-build` package
+(e.g. `oar-build-master.zip`) and then execute the commands as shown
+in this example session:
+
+```bash
+$ ls
+oar-build-master.zip      oar-mypkg
+$ unzip -q oar-build-master.zip
+$ ls
+oar-build-master    oar-build-master.zip      oar-mypkg
+$ cd oar-build-master
+$ tar cf - * | (cd ../oar-mypkg; tar xkf -)     # WILL NOT OVERWRITE EXISTING FILES
+```
+
+The `tar` command above adds the following to the new package:
+```
+   docker             -- directory containing tools for building and testing via Docker
+   oar-build          -- directory containing the oar-build infrastructure 
+   scripts            -- directory containing build scripts
+   README_OARBUILD.md -- this file
+```
+
+As the developer of code in the new package, you should customize the
+scripts found in the `scripts` and `docker` directories as needed (see
+script comments for details).  The contents of `oar-build` are
+normally not edited.
+
+One important changes to make in your new package after copying in the
+`oar-build` files is to your `README.md` file:  update the build
+instructions to incorporate the description below.  
+
 ## Building a package with the oar-build framework
 
 The deployable products that result from building a package that
