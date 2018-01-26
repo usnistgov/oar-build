@@ -33,7 +33,7 @@ fi
 
 # inject the version string into the source code
 #
-[ -e "$PACKAGE_DIR/scripts/inject_version.sh" ] && {
+[ ! -e "$PACKAGE_DIR/scripts/inject_version.sh" ] || {
     bash "$PACKAGE_DIR/scripts/inject_version.sh" $version $PACKAGE_NAME
 }
 

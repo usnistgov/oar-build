@@ -8,6 +8,43 @@ execdir=`dirname $0`
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 distdir=$PACKAGE_DIR/dist
 
+# Update this list with the names of the individual component names
+# 
+DISTNAMES=($PACKAGE_NAME)
+
+# handle command line options
+while [ "$1" != "" ]; do 
+  case "$1" in
+    --dist-dir=*)
+        DIST_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        ;;
+    --dist-dir)
+        shift
+        DIST_DIR=$1
+        ;;
+    --source-dir=*|--dir=*)
+        PACKAGE_DIR=`echo $1 | sed -e 's/[^=]*=//'`
+        ;;
+    -d|--dir|--source-dir)
+        shift
+        PACKAGE_DIR=$1
+        ;;
+    -*)
+        echo "$prog: unsupported option:" $1
+        false
+        ;;
+    *)
+        (echo :${DISTNAMES[@]}: | sed -e 's/ /:/g' | grep -qs :${1}:) || {
+            echo "${prog}: ${1}: unrecognized distribution name"
+            false
+        }
+        ;;
+  esac
+  shift
+done
+
+true ${DIST_DIR:=$SOURCE_DIR/dist}
+
 mkdir -p $distdir
 
 # set the current version.  This will inject the version into the code, if 
@@ -16,10 +53,7 @@ mkdir -p $distdir
 setversion
 [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
 version=`cat VERSION | awk '{print $2}'`
-
-# Update this list with the names of the individual component names
-# 
-DISTNAMES=($PACKAGE_NAME)
+vers4fn=`echo $version | sed -re 's#[/\s]+#_#g'`
 
 
 # ENTER BUILD COMMANDS HERE
@@ -38,5 +72,5 @@ DISTNAMES=($PACKAGE_NAME)
 
 # cd $distdir
 # DISTFILES=.
-# zip -r ${DISTNAMES[0]}-${version}.ext 
+# zip -r ${DISTNAMES[0]}-${vers4fn}.ext $DISTFILES
 
