@@ -1,0 +1,42 @@
+#! /bin/bash
+#
+# build.sh:  build the package
+#
+prog=`basename $0`
+execdir=`dirname $0`
+[ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+distdir=$PACKAGE_DIR/dist
+
+mkdir -p $distdir
+
+# set the current version.  This will inject the version into the code, if 
+# needed.
+#
+setversion
+[ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
+version=`cat VERSION | awk '{print $2}'`
+
+# Update this list with the names of the individual component names
+# 
+DISTNAMES=($PACKAGE_NAME)
+
+
+# ENTER BUILD COMMANDS HERE
+#
+# The build products should be written into the "dist" directory
+
+
+# ENTER COMMANDS for creating the dependency file(s)
+#
+# A dependency file should be called DISTNAME-${version}_dep.json
+
+# ENTER COMMANDS for bundling (or renaming) the distribution, if needed
+#
+# A distribution file should be called DISTNAME-${version}.DISTEXT
+#
+
+# cd $distdir
+# DISTFILES=.
+# zip -r ${DISTNAMES[0]}-${version}.ext 
+

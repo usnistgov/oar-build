@@ -15,7 +15,7 @@
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
-codedir=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
+PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 
 ## These are set by default via _run.sh; if necessary, uncomment and customize
 #

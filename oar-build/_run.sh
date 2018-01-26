@@ -4,18 +4,18 @@
 # can use.
 #
 set -e
-true ${prog:=_buildall.sh}
+true ${prog:=_run.sh}
 
-[ -z "$codedir" ] && {
-    echo "${prog}: \$codedir is not set."
+[ -z "$PACKAGE_DIR" ] && {
+    echo "${prog}: \$PACKAGE_DIR is not set."
     exit 10
 }
 
-true ${OAR_BUILD_DIR:=$codedir/oar-build}
-true ${OAR_DOCKER_DIR:=$codedir/docker}
+true ${OAR_BUILD_DIR:=$PACKAGE_DIR/oar-build}
+true ${OAR_DOCKER_DIR:=$PACKAGE_DIR/docker}
 true ${RM:=}
 
-true ${PACKAGE_NAME:=`basename $codedir`}
+true ${PACKAGE_NAME:=`basename $PACKAGE_DIR`}
 true ${SHELL_COMMANDS:="bshell shell"}
 
 LOGFILE=run.log
@@ -36,7 +36,7 @@ function set_interactive {
 }
 
 function collect_run_opts {
-    RUN_OPTS="$RM -e PACKAGE_NAME=$PACKAGE_NAME -v ${codedir}:/dev/$PACKAGE_NAME"
+    RUN_OPTS="$RM -e PACKAGE_NAME=$PACKAGE_NAME -v ${PACKAGE_DIR}:/dev/$PACKAGE_NAME"
 }
 
 function setup_run {

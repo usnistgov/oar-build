@@ -5,14 +5,14 @@ set -e
 
 case "$1" in
     build)
-        scripts/buildall.sh
+        scripts/makedist
         ;;
     test)
-        scripts/buildall.sh
-        scripts/testall.py
+        scripts/makedist
+        scripts/testall
         ;;
     bshell)
-        scripts/build.sh
+        scripts/makedist
         exec /bin/bash
         ;;
     shell)
