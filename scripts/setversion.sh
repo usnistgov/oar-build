@@ -6,7 +6,7 @@
 #
 # This script can be edited to customize it for its package.
 #
-set -x
+# set -x
 prog=`basename $0`
 execdir=`dirname $0`
 [ "$execdir" = "" -o "$execdir" = "." ] && execdir=$PWD
@@ -30,3 +30,5 @@ write_VERSION $PACKAGE_NAME $version
 [ -e "$PACKAGE_DIR/scripts/inject_version.sh" ] && {
     bash "$PACKAGE_DIR/scripts/inject_version.sh" $version $PACKAGE_NAME
 }
+
+echo $PACKAGE_NAME $version

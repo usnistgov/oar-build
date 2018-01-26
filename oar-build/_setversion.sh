@@ -42,7 +42,16 @@ function get_tag {
     if [ -n "$GIT_COMMIT" ]; then
         opts=--tags
         #opts=
-        git describe $opts
+        errfile=/tmp/git-describe-$$_err.txt
+        git describe $opts 2> $errfile || {
+            grep -qs 'No names found' $errfile || {
+                echo setversion: git describe failed: 1>&2
+                cat $errfile 1>&2
+                rm $errfile
+                false
+            }
+            rm $errfile
+        }
     fi
 }
 
@@ -54,7 +63,7 @@ function determine_version {
     [ -z "$out" ] && {
         out=`get_branchname`
         commit=`get_commit`
-        [ -n "$commit" ] && out="${out}-$commit"
+        [ -n "$commit" ] && out="${out}-${commit:0:8}"
     }
     echo $out
 }
