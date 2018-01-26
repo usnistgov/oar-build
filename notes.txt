@@ -38,7 +38,7 @@ dir: scripts
 The version string given to a built product, in general, has the
 following pattern:
 
-   VERSION := TAG ':' BUILD
+   VERSION := TAG [':' BUILD]
 
 where TAG is a string identifying either the explicit release or a
 name that indicates the state of the repository or archive that the
@@ -113,3 +113,67 @@ commit string.
            current commit:  git rev-parse HEAD
 
 ### Creating a product level oar-dependencies.json
+
+## Building and Testing
+
+### Vocabulary 
+
+A component is a stand-alone executable piece of an application
+(e.g. the PDR Landing Page service).  A repository can provide one or
+more components.  It may be represented by a single file (e.g. an
+executable), but more often it is a collection of files that must be
+installed into it execution platform (e.g. a docker container).  
+
+A distribution is a packaging of a component into a single file so
+that it can easily be archived, delivered and deployed to the
+execution platform.  A distribution can actually contain include
+multiple components or all of the components provided by a repository
+if it is convenient to do so.
+
+Distributions are created by build scripts and placed into the dist/.
+Each distribution will have a name of the following form:
+
+  DISTNAME-VERSION.PKGEXT
+
+where DISTNAME is either a name for the single component it contains
+or a general name reflecting all of the components.  VERSION is the
+VERSION string written into the VERSION file during the build
+process, and PKGEXT is file extension appropriate for the bundling
+used (e.g. jar, zip, war, etc.)
+
+### Build scripts
+
+All projects are expected to have at least 2 scripts under scripts/
+for building distributions:  makedist and makedist.docker.
+
+makedist is for building distributions natively assuming that the
+minimal dependencies have been installed already.  Such dependencies
+typically includes the build and execution environment
+(e.g. java/maven, python, or npm).  It may also include required Linux
+packages installed into the OS (e.g. under /usr).  It would not
+include dependencies that are pulled in automatically by the build
+system (as with maven and npm).
+
+makedist.docker is for building distributions when the minimal
+dependencies have *not* been installed; instead, docker is used to
+provide the build and testing environment (via Dockerfiles).  The
+docker/ directory should also contain a script called makedist which
+launches the necessary docker containters for building the
+distributions.  The docker container entrypoint script may call
+scripts/makedist or it may be more specialized.
+
+There may be additional scripts of the form makedist.[CONTEXT] where
+CONTEXT is a context where building is done (e.g. travis, cicd).
+Their implementations may include testing.
+
+A makedist should support optional arguments that are the names of the
+components that should be built (at the exclusion of others).  If no
+arguments are provided, all components should be built.
+
+## Test Scripts
+
+The script/ directory should also contain a script called testall.  It
+should run assuming all dependencies installed natively.  It may
+support command-line arguments that are names of individual components
+to test.
+
