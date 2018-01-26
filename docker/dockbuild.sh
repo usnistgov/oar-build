@@ -20,7 +20,7 @@ set -e
 #
 # DOCKER_IMAGE_DIRS="build-test"
 
-. $codedir/oar-build/_buildall.sh
+. $codedir/oar-build/_dockbuild.sh
 
 # set BUILD_OPTS and BUILD_IMAGES
 # 

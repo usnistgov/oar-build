@@ -25,12 +25,12 @@ function log_intro {
 }
 
 function logit {
-    if [ -n "$LOGPATH" ]; then
-        tee -a $LOGPATH
+    if [ -z "$LOGPATH" ]; then
+        cat
     elif [ -n "$QUIET" ]; then
         cat >> $LOGPATH
     else
-        cat
+        tee -a $LOGPATH
     fi
 }
 

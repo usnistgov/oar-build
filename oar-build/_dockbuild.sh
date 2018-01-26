@@ -1,10 +1,10 @@
 #! /bin/bash
 #
-# Processes command line arguments for buildall.sh and defines functions it
+# Processes command line arguments for dockbuild.sh and defines functions it
 # can use.
 #
 set -e
-true ${prog:=_buildall.sh}
+true ${prog:=_dockbuild.sh}
 
 [ -z "$codedir" ] && {
     echo "${prog}: \$codedir is not set."
@@ -22,7 +22,7 @@ true ${PACKAGE_NAME:=`basename $codedir`}
     done
 }
 
-LOGFILE=buildall.log
+LOGFILE=dockbuild.log
 LOGPATH=$PWD/$LOGFILE
 . $OAR_BUILD_DIR/_logging.sh
 
@@ -61,9 +61,9 @@ function setup_build {
 }
 
 function help {
-    helpfile=$OAR_BUILD_DIR/build_help.txt
-    [ -f "$OAR_DOCKER_DIR/build_help.txt" ] && \
-        helpfile=$OAR_DOCKER_DIR/build_help.txt
+    helpfile=$OAR_BUILD_DIR/dockbuild_help.txt
+    [ -f "$OAR_DOCKER_DIR/dockbuild_help.txt" ] && \
+        helpfile=$OAR_DOCKER_DIR/dockbuild_help.txt
     sed -e "s/%PROG%/$prog/g" $helpfile
 }
 
