@@ -23,7 +23,13 @@ set -e
 version=$(determine_version)
 
 # write the package name and version to file called VERSION
-write_VERSION $PACKAGE_NAME $version
+# don't overwrite VERSION if this is not a cloned repo
+if [ -n "$GIT_COMMIT" -o ! -e VERSION ]; then
+    write_VERSION $PACKAGE_NAME $version
+else
+    [ -n "$PACKAGE_NAME" ] || PACKAGE_NAME=`cat VERSION | awk '{print $1}'`
+    version=`cat VERSION | awk '{print $2}'`
+fi
 
 # inject the version string into the source code
 #
@@ -31,4 +37,4 @@ write_VERSION $PACKAGE_NAME $version
     bash "$PACKAGE_DIR/scripts/inject_version.sh" $version $PACKAGE_NAME
 }
 
-echo $PACKAGE_NAME $version
+# echo $PACKAGE_NAME $version
