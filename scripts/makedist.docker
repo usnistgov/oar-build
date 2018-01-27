@@ -8,8 +8,6 @@ execdir=`dirname $0`
 PACKAGE_DIR=`(cd $execdir/.. > /dev/null 2>&1; pwd)`
 docker_dir=${PACKAGE_DIR}/docker
 
-. $PACKAGE_DIR/oar-build/_logging.sh
-
 # (re-)build the docker containers
 $docker_dir/dockbuild.sh -q || {
     echo "${prog}: Failed to build docker containers; see docker/dockbuild.log" \

@@ -22,6 +22,11 @@ set -e
 
 . $codedir/oar-build/_dockbuild.sh
 
+# Override, if need be, the UID of the user to run as in the container; the 
+# default is the user running this script.
+#
+# OAR_DOCKER_UID=
+
 # set BUILD_OPTS and BUILD_IMAGES
 # 
 setup_build
